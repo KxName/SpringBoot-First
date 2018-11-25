@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api-gateway/api-gateway.iml" filepath="$PROJECT_DIR$/api-gateway/api-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/brand-api/brand-api.iml" filepath="$PROJECT_DIR$/brand-api/brand-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/brand-producers/brand-producers.iml" filepath="$PROJECT_DIR$/brand-producers/brand-producers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/category-producer/category-producer.iml" filepath="$PROJECT_DIR$/category-producer/category-producer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eureka-center/eureka-center.iml" filepath="$PROJECT_DIR$/eureka-center/eureka-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fh-util/fh-util.iml" filepath="$PROJECT_DIR$/fh-util/fh-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/shop-cloud.iml" filepath="$PROJECT_DIR$/.idea/shop-cloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop-producer/shop-producer.iml" filepath="$PROJECT_DIR$/shop-producer/shop-producer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop-protal/shop-protal.iml" filepath="$PROJECT_DIR$/shop-protal/shop-protal.iml" />
+    </modules>
+  </component>
+</project>

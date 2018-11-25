@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商品列表</title>
+    <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/datatable/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
+    <link href="js/fileinput/css/fileinput.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/form/css/bootstrapValidator.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    商品
+                </div>
+
+                <table id="shopListDiv" class="table table-bordered">
+                    <tr>
+                        <th>商品名</th>
+                        <th>商品价格</th>
+                        <th>品牌名</th>
+                    </tr>
+
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/bootbox.min.js"></script>
+<script src="js/datatable/datatables.min.js"></script>
+<script src="js/datatable/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="js/fileinput/js/fileinput.js"></script>
+<script type="text/javascript" src="js/fileinput/js/locales/zh.js"></script>
+<script src="js/form/js/bootstrapValidator.js"></script>
+<script src="js/form/js/language/zh_CN.js"></script>
+
+<script>
+    $(function() {
+        initProductList();
+    })
+
+    function initProductList() {
+        $.ajax({
+            type:"get",
+            url:"/shops",
+            success:function (result) {
+                if (result.code == 200) {
+                   var v_shopList =  result.data;
+                   for (var i = 0; i < v_shopList.length; i++) {
+                       var v_tr = "<tr>";
+                       v_tr+="<td>"+v_shopList[i].shopName+"</td>";
+                       v_tr+="<td>"+v_shopList[i].price+"</td>";
+                       v_tr+="<td>"+v_shopList[i].brandName+"</td>";
+                       v_tr+="</tr>";
+                       $("#shopListDiv").append(v_tr);
+                   }
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

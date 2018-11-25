@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>商品添加</title>
+    <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/datatable/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
+    <link href="js/fileinput/css/fileinput.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/form/css/bootstrapValidator.css">
+</head>
+<body>
+
+<form class="form-horizontal" id="addShopFormName">
+    <div class="form-group" >
+        <label  class="col-sm-2 control-label">商品名称</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="shopName" name="shopName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-2 control-label">商品价格</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="price" name="price">
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-2 control-label">商品库存</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="stock" name="stock">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label  class="col-sm-2 control-label">商品主图</label>
+        <div class="col-sm-6">
+
+            <input type="file" name="photo" id="photo" multiple class="file-loading" />
+            <input type="text" class="form-control" id="photoPath" >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">商品品牌：</label>
+        <div id="brandDiv" class="col-sm-2">
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">商品类型：</label>
+        <div id="cateDiv">
+
+        </div>
+    </div>
+    <div class="form-group" style="text-align: center;">
+        <button type="button" class="btn btn-primary" onclick="addShop()">
+            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>新增
+        </button>
+        <button type="reset" class="btn btn-info" >
+            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>重置
+        </button>
+    </div>
+</form>
+
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/bootbox.min.js"></script>
+<script src="js/datatable/datatables.min.js"></script>
+<script src="js/datatable/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="js/fileinput/js/fileinput.js"></script>
+<script type="text/javascript" src="js/fileinput/js/locales/zh.js"></script>
+<script src="js/form/js/bootstrapValidator.js"></script>
+<script src="js/form/js/language/zh_CN.js"></script>
+
+<script>
+
+    $ (function () {
+        initCate(0);
+        initBrand();
+        intifileinput();
+        addShopValidator();
+    })
+
+    function addShopValidator() {
+        $('#addShopFormName').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                shopName: {
+                    message: '商品名验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '商品名不能为空'
+                        },
+                    }
+                },
+                price: {
+                    message: '价格验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '价格不能为空'
+                        },
+                    }
+                },
+                stock: {
+                    message: '库存名验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '库存不能为空'
+                        },
+                    }
+                },
+            }
+        });
+    }
+    function addShop() {
+        $("#addShopFormName" ).data('bootstrapValidator').validate();//提交验证
+        if ($("#addShopFormName").data('bootstrapValidator').isValid()) {
+        }
+        else {
+            return false;
+        }
+        var v_shopName=$("#shopName").val();
+        var v_price=$("#price").val();
+        var v_stock=$("#stock").val();
+        var v_photoPath=$("#photoPath").val();
+        var v_cate1=$("[name='cateSel']")[0].value;
+        var v_cate2=$("[name='cateSel']")[1].value;
+        var v_cate3=$("[name='cateSel']")[2].value;
+        var v_cataName=$("[name='cateVal']")[0].value+"/"+$("[name='cateVal']")[1].value+"/"+$("[name='cateVal']")[2].value;
+        var v_brandId=$("#brandSel").val();
+        var param={};
+        param.shopName=v_shopName;
+        param.price=v_price;
+        param.stock=v_stock;
+        param.shopPhoto=v_photoPath;
+        param.category1=v_cate1;
+        param.category2=v_cate2;
+        param.category3=v_cate3;
+        param.brandId=v_brandId;
+        param.cateName=v_cataName;
+        $.ajax({
+            type:"post",
+            url:"/shop/add",
+            data:param,
+            success:function (result) {
+                if (result.code == 200){
+                    location.href="/list.html"
+                }
+            }
+        })
+    }
+    function initCate(id,obj) {
+        $.ajax({
+            type:"get",
+            url:"/category/list",
+            data:{id:id},
+            success : function (result) {
+                if(result.code == 200){
+                    if(obj){
+                        $(obj).parent().nextAll().remove();
+                        var selindex=obj.selectedIndex;
+                        $(obj).prev().val(obj.options[selindex].text);
+                    }
+                    var v_cateList=result.data;
+                    if (v_cateList.length==0){
+                        return;
+                    }
+                    var result='<div class="col-sm-2" ><input type="text" name="cateVal"> <select name="cateSel" class="form-control" onchange="initCate(this.value, this)"> <option value="">=请选择=</option> ';
+                    for (var i=0; i<v_cateList.length; i++){
+                        result+="<option value='"+v_cateList[i].id+"'>"+v_cateList[i].categoryName+"</option> "
+                    }
+                    result+="</select></div>"
+                    $("#cateDiv").append(result);
+                }
+            }
+        })
+    }
+    function initBrand() {
+        $.ajax({
+            type:"get",
+            url:"/brand/list",
+            success : function (result) {
+                if(result.code == 200){
+                    var v_brandList=result.data;
+                    var result='<select class="form-control" id="brandSel"> <option value="">=请选择=</option> ';
+                    for (var i=0; i<v_brandList.length; i++){
+                        result+="<option value='"+v_brandList[i].id+"'>"+v_brandList[i].brandName+"</option> "
+                    }
+                    result+="</select>"
+                    $("#brandDiv").append(result);
+                }
+            }
+        })
+    }
+    function  intifileinput() {
+        $("#photo").fileinput({
+            //上传的地址
+            uploadUrl: "/shop/uploadPhoto",
+            language : 'zh',
+            uploadAsync: true,//默认异步上传
+            showUpload: false,//是否显示上传按钮,跟随文本框的那个
+            showRemove: false,//显示移除按钮,跟随文本框的那个
+            showCaption: true,//是否显示标题,就是那个文本框
+            showPreview: true,//是否显示预览,不写默认为true
+            dropZoneEnabled: false,//是否显示拖拽区域，默认不写为true，但是会占用很大区域
+            maxFilesNum: 1,//上传最大的文件数量
+            enctype: 'multipart/form-data',
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            allowedPreviewTypes : [ 'image' ],  //预览的文件类型
+            allowedFileExtensions : [ 'jpg', 'png', 'gif' ] //上传的文件的后缀名
+        });
+        //异步上传返回结果处理
+        $("#photo").on("fileuploaded", function (event, data, previewId, index) {
+            $("#photoPath").val(data.response.path);
+        });
+    }
+</script>
+</body>
+</html>
